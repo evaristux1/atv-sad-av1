@@ -1,4 +1,3 @@
-
 ## Documentação do Código para Previsão de Desempenho no ENEM com k-NN
 
 ### Descrição Geral
@@ -8,10 +7,53 @@ Este código utiliza o algoritmo k-Nearest Neighbors (k-NN) para prever as notas
 ---
 
 ### Bibliotecas Utilizadas
+
+Antes de executar o código, é necessário instalar as dependências. Para isso, utilize o comando abaixo em seu terminal ou ambiente de desenvolvimento:
+
+```bash
+pip install pandas numpy scikit-learn joblib
+```
+
+As principais bibliotecas utilizadas são:
+
 - **pandas**: Manipulação de dados em formato de DataFrame.
 - **numpy**: Operações matemáticas e manipulação de arrays.
 - **scikit-learn**: Biblioteca para aprendizado de máquina, usada para treinar o modelo k-NN.
 - **joblib**: Serialização do modelo para salvamento e carregamento posterior.
+
+---
+
+### Passo a Passo para Utilizar o Código
+
+#### 1. Download dos Microdados do ENEM
+Você precisará dos **microdados do ENEM** para executar este projeto. Os dados estão disponíveis publicamente no site do INEP:
+
+- Acesse o link: [Microdados ENEM](https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem).
+- Faça o download dos dados referentes ao ano que deseja utilizar.
+- Extraia os arquivos e localize o arquivo CSV que contém os dados brutos.
+
+#### 2. Preparação do Ambiente
+
+- Instale as dependências listadas acima.
+- Baixe os microdados do ENEM e extraia o arquivo para um diretório acessível.
+
+#### 3. Execução do Código
+
+Após a preparação dos dados e ambiente, você pode executar o código principal que implementa as seguintes etapas:
+
+1. **Carregar Dados**: Utilize a função `load_principal_columns` para carregar as colunas relevantes dos dados do ENEM e salvar um CSV otimizado.
+   - **Arquivo CSV Completo**: O código carrega os dados completos do arquivo baixado.
+   - **Colunas Relevantes**: As colunas utilizadas para previsão são notas e dados socioeconômicos dos alunos.
+   - **Novo CSV Gerado**: Um arquivo com apenas essas colunas é salvo para otimizar o processamento.
+
+2. **Pré-processamento dos Dados**:
+   - A função `encode_categorical_columns` é responsável por codificar variáveis categóricas (como renda familiar e escolaridade) e tratar valores nulos nos dados.
+   
+3. **Treinamento do Modelo**:
+   - A função `train_and_save_knn_model` é usada para treinar o modelo k-NN com os dados pré-processados. O modelo é salvo no formato `.pkl` usando a biblioteca `joblib`.
+
+4. **Predição para Novos Alunos**:
+   - A função `predict_new_student` permite que o usuário insira os dados de um novo aluno (como renda familiar, escolaridade e notas anteriores) para prever suas notas nas diferentes áreas de conhecimento do ENEM.
 
 ---
 
@@ -102,7 +144,7 @@ Este código utiliza o algoritmo k-Nearest Neighbors (k-NN) para prever as notas
 
 ### Fluxo Geral
 
-1. **Carregar Dados**: Utilize a função `load_principal_columns` para carregar as colunas relevantes dos dados do ENEM e salvar um CSV otimizado.
+1. **Download e Carregamento dos Dados**: Após o download dos microdados do ENEM, utilize a função `load_principal_columns` para carregar as colunas relevantes e gerar um CSV otimizado.
 2. **Pré-processamento**: O DataFrame resultante passa pela função `encode_categorical_columns` para codificação das variáveis categóricas e tratamento de valores ausentes.
 3. **Treinamento do Modelo**: A função `train_and_save_knn_model` é usada para treinar o modelo k-NN com os dados pré-processados e salvar o modelo treinado.
 4. **Predição**: Novos dados de estudantes podem ser passados para o modelo através da função `predict_new_student` para prever as notas com base nos dados inseridos.
