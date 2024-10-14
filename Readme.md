@@ -1,56 +1,108 @@
-# Relatório Explicativo
 
-## 1. Introdução
+## Documentação do Código para Previsão de Desempenho no ENEM com k-NN
 
-O Exame Nacional do Ensino Médio (ENEM) é uma das principais avaliações educacionais no Brasil, utilizado como critério de acesso ao ensino superior. Este projeto tem como objetivo desenvolver um modelo de previsão de desempenho no ENEM utilizando o algoritmo k-Nearest Neighbors (k-NN). Através da análise de microdados do ENEM, buscamos identificar características que influenciam o desempenho dos alunos e fornecer previsões para novos candidatos.
+### Descrição Geral
 
-## 2. Manipulação dos Dados
+Este código utiliza o algoritmo k-Nearest Neighbors (k-NN) para prever as notas do Exame Nacional do Ensino Médio (ENEM) de estudantes com base em fatores socioeconômicos e históricos de notas anteriores. O fluxo principal envolve o carregamento de dados, pré-processamento, treinamento de um modelo de regressão k-NN e a realização de previsões.
 
-### 2.1. Coleta de Dados
+---
 
-Os dados utilizados para este projeto foram coletados dos **Microdados do ENEM** disponibilizados pelo INEP. O conjunto de dados contém informações detalhadas sobre os participantes, incluindo notas, características socioeconômicas e dados sobre a escola de origem.
+### Bibliotecas Utilizadas
+- **pandas**: Manipulação de dados em formato de DataFrame.
+- **numpy**: Operações matemáticas e manipulação de arrays.
+- **scikit-learn**: Biblioteca para aprendizado de máquina, usada para treinar o modelo k-NN.
+- **joblib**: Serialização do modelo para salvamento e carregamento posterior.
 
-### 2.2. Preparação dos Dados
+---
 
-Os dados foram carregados utilizando a biblioteca `pandas`, e as seguintes etapas de preparação foram realizadas:
+### Funções Implementadas
 
-1. **Filtragem de Colunas**: Selecionamos as colunas relevantes para a previsão, que incluem:
-   - Notas nas áreas do conhecimento (Matemática, Ciências da Natureza, Linguagens, Ciências Humanas, Redação).
-   - Informações socioeconômicas (renda familiar, escolaridade da mãe, tipo de escola, raça/cor).
+1. **`load_principal_columns(input_file_path, output_file_path)`**
+   - **Descrição**: Carrega um arquivo CSV, seleciona as colunas relevantes para o modelo e salva um novo arquivo CSV com essas colunas.
+   - **Parâmetros**:
+     - `input_file_path` (str): Caminho para o arquivo CSV de entrada.
+     - `output_file_path` (str): Caminho para salvar o novo CSV com as colunas filtradas.
+   - **Retorno**: Nenhum. O novo arquivo CSV é salvo no caminho especificado.
 
-2. **Tratamento de Valores Faltantes**: Os registros com valores ausentes nas colunas relevantes foram removidos para garantir a qualidade dos dados.
+2. **`encode_categorical_columns(df)`**
+   - **Descrição**: Codifica variáveis categóricas e trata valores ausentes nas colunas relevantes.
+   - **Parâmetros**:
+     - `df` (DataFrame): DataFrame a ser tratado.
+   - **Retorno**: DataFrame tratado com colunas categóricas codificadas e valores nulos preenchidos.
 
-3. **Codificação de Variáveis Categóricas**: Utilizamos o `LabelEncoder` para transformar variáveis categóricas em valores numéricos. Por exemplo, as variáveis para escolaridade da mãe e tipo de escola foram convertidas em inteiros, facilitando a análise.
+3. **`load_and_prepare_data(file_path)`**
+   - **Descrição**: Carrega o arquivo CSV, filtra colunas relevantes e trata valores ausentes.
+   - **Parâmetros**:
+     - `file_path` (str): Caminho do arquivo CSV a ser carregado.
+   - **Retorno**: DataFrame tratado com colunas filtradas.
 
-4. **Normalização**: Os dados de renda familiar foram mantidos como valores `float` para melhor representação.
+4. **`train_and_save_knn_model(df, model_path="modelo_knn.pkl")`**
+   - **Descrição**: Treina um modelo de regressão k-NN com base nos dados fornecidos e salva o modelo.
+   - **Parâmetros**:
+     - `df` (DataFrame): Dados de treinamento.
+     - `model_path` (str): Caminho onde o modelo será salvo.
+   - **Retorno**: Nenhum. O modelo treinado é salvo no caminho especificado.
 
-### 2.3. Conjunto de Treinamento e Teste
+5. **`load_knn_model(model_path="modelo_knn.pkl")`**
+   - **Descrição**: Carrega um modelo k-NN previamente salvo.
+   - **Parâmetros**:
+     - `model_path` (str): Caminho para o arquivo do modelo salvo.
+   - **Retorno**: Objeto do modelo k-NN carregado ou `None` se o modelo não for encontrado.
 
-Os dados foram divididos em conjuntos de treinamento e teste utilizando a função `train_test_split` da biblioteca `sklearn`. O conjunto de treinamento foi usado para treinar o modelo, enquanto o conjunto de teste permitiu avaliar a precisão das previsões.
+6. **`ask_escolaridade_mae()`**
+   - **Descrição**: Solicita e retorna a escolaridade da mãe do estudante com base em uma entrada do usuário.
+   - **Retorno**: Código correspondente à escolaridade da mãe.
 
-## 3. Implementação do Algoritmo
+7. **`ask_etnia()`**
+   - **Descrição**: Solicita e retorna a etnia do estudante com base em uma entrada do usuário.
+   - **Retorno**: Código numérico correspondente à etnia.
 
-### 3.1. Escolha do Algoritmo
+8. **`ask_float_input(prompt)`**
+   - **Descrição**: Valida uma entrada de número decimal do usuário.
+   - **Parâmetros**:
+     - `prompt` (str): Mensagem de solicitação.
+   - **Retorno**: Valor decimal inserido pelo usuário.
 
-Optamos por utilizar o algoritmo k-Nearest Neighbors (k-NN) devido à sua simplicidade e eficácia em problemas de previsão baseados em dados históricos. O k-NN funciona identificando os k vizinhos mais próximos de uma nova entrada e fazendo previsões com base nas características desses vizinhos.
+9. **`ask_int_input(prompt, valid_values=None)`**
+   - **Descrição**: Valida uma entrada de número inteiro do usuário.
+   - **Parâmetros**:
+     - `prompt` (str): Mensagem de solicitação.
+     - `valid_values` (list): Lista opcional de valores válidos.
+   - **Retorno**: Valor inteiro inserido pelo usuário.
 
-### 3.2. Treinamento do Modelo
+10. **`get_renda_codigo(renda_familiar)`**
+    - **Descrição**: Converte um valor de renda familiar em seu respectivo código (Q006).
+    - **Parâmetros**:
+      - `renda_familiar` (float): Valor da renda familiar.
+    - **Retorno**: Código correspondente à renda.
 
-O modelo k-NN foi implementado utilizando a classe `KNeighborsRegressor` da biblioteca `sklearn`. O processo de treinamento incluiu:
+11. **`ask_uf()`**
+    - **Descrição**: Solicita e retorna o código do Estado (UF) do estudante com base em uma entrada do usuário.
+    - **Retorno**: Valor codificado do estado (UF).
 
-1. **Instanciação do Modelo**: Criamos uma instância do `KNeighborsRegressor` com um número definido de vizinhos (k = 5).
-2. **Treinamento**: O modelo foi treinado utilizando os dados de entrada (X) e as respectivas notas (y).
+12. **`ask_municipio()`**
+    - **Descrição**: Solicita e retorna o código do município da prova com base em uma entrada do usuário.
+    - **Retorno**: Código do município.
 
-### 3.3. Avaliação do Modelo
+13. **`ask_simulado_scores()`**
+    - **Descrição**: Solicita e retorna as notas do simulado nas diferentes áreas do conhecimento.
+    - **Retorno**: Dicionário contendo as notas nas diferentes áreas do conhecimento.
 
-Após o treinamento, o modelo foi avaliado utilizando o conjunto de teste. O erro quadrático médio (MSE) foi calculado para medir a precisão das previsões. Valores de MSE mais baixos indicam um modelo mais preciso.
+14. **`give_financial_value()`**
+    - **Descrição**: Solicita o valor da renda familiar e retorna o código codificado de renda (Q006).
+    - **Retorno**: Valor codificado da renda familiar.
 
-## 4. Justificativa para as Previsões
+15. **`predict_new_student(knn)`**
+    - **Descrição**: Solicita os dados de um novo aluno e realiza a previsão das notas do ENEM utilizando o modelo k-NN.
+    - **Parâmetros**:
+      - `knn` (KNeighborsRegressor): Modelo k-NN treinado.
+    - **Retorno**: Nenhum. As previsões são exibidas.
 
-As previsões geradas pelo modelo k-NN são baseadas nas características dos alunos que participaram do ENEM em anos anteriores. Ao utilizar variáveis como renda familiar, escolaridade da mãe, tipo de escola e raça/cor, o modelo consegue identificar padrões que estão associados a um melhor desempenho no exame.
+---
 
-Os dados foram escolhidos com base em sua relevância para o desempenho acadêmico, e a normalização das entradas garante que o modelo possa generalizar bem para novos alunos. As previsões são apresentadas de forma clara e informativa, permitindo que a instituição de ensino identifique quais alunos podem precisar de apoio adicional.
+### Fluxo Geral
 
-## 5. Conclusão
-
-Este projeto demonstrou como utilizar aprendizado de máquina para prever o desempenho no ENEM com base em microdados disponíveis. A implementação do algoritmo k-NN, juntamente com a manipulação cuidadosa dos dados, resultou em um modelo capaz de fornecer previsões valiosas. Futuras iterações podem incluir a adição de mais variáveis e a exploração de algoritmos mais complexos para melhorar ainda mais a precisão das previsões.
+1. **Carregar Dados**: Utilize a função `load_principal_columns` para carregar as colunas relevantes dos dados do ENEM e salvar um CSV otimizado.
+2. **Pré-processamento**: O DataFrame resultante passa pela função `encode_categorical_columns` para codificação das variáveis categóricas e tratamento de valores ausentes.
+3. **Treinamento do Modelo**: A função `train_and_save_knn_model` é usada para treinar o modelo k-NN com os dados pré-processados e salvar o modelo treinado.
+4. **Predição**: Novos dados de estudantes podem ser passados para o modelo através da função `predict_new_student` para prever as notas com base nos dados inseridos.
